@@ -1,6 +1,12 @@
 QEMU            = qemu-system-x86_64
 QEMUFLAGS       = -m 1G -enable-kvm -cpu host -serial stdio
 
+grub: nova
+	$(MAKE) -C guest/ all
+	cp guest/image.elf iso/boot/
+	cp NOVA/build/hypervisor-x86_64 iso/boot/hypervisor-x86_64
+	grub-mkrescue -o any.iso iso/
+
 limine: nova
 	git clone https://github.com/limine-bootloader/limine.git --branch=v3.0-branch-binary --depth=1 || echo ""
 	make -C limine
@@ -17,9 +23,6 @@ limine: nova
 	limine/limine-deploy any.iso
 	rm -rf iso_root
 
-grub: nova
-	cp NOVA/build/hypervisor-x86_64 iso/boot/hypervisor-x86_64
-	grub-mkrescue -o any.iso iso/
 	
 nova:
 	git clone https://github.com/alex-ab/NOVA || echo ""
