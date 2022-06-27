@@ -4,3 +4,4 @@ limine
 .vscode
 iso/boot/hypervisor-x86_64
 *.elf
+*.o
