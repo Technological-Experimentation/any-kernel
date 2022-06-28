@@ -2,7 +2,7 @@ QEMU            = qemu-system-x86_64
 QEMUFLAGS       = -m 1G -enable-kvm -cpu host -serial stdio -M q35 -cdrom
 
 grub: nova
-	$(MAKE) -C guest/ all
+	@$(MAKE) -C guest/ all --no-print-directory
 	cp guest/image.elf iso/boot/
 	cp NOVA/build-x86_64/x86_64-nova iso/boot/hypervisor-x86_64
 	grub-mkrescue -o any.iso iso/
@@ -22,14 +22,20 @@ limine: nova
 		iso_root -o any.iso
 	limine/limine-deploy any.iso
 	rm -rf iso_root
-
 	
 nova:
 	git clone https://github.com/Udosteinberg/NOVA || echo ""
-	$(MAKE) -C NOVA/ ARCH=x86_64
+	@$(MAKE) -C NOVA/ ARCH=x86_64 --no-print-directory
+
+guest/clean:
+	@$(MAKE) -C guest/ clean --no-print-directory
+
+hypervisor/clean:
+	@$(MAKE) -C NOVA/ clean --no-print-directory
 
 clean:
-	$(MAKE) -C NOVA/build clean
+	@$(MAKE) -C NOVA/ clean --no-print-directory
+	@$(MAKE) -C guest/ clean --no-print-directory
 	rm -rf any.iso
 
 run:
