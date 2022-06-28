@@ -1,10 +1,10 @@
 QEMU            = qemu-system-x86_64
-QEMUFLAGS       = -m 1G -enable-kvm -cpu host -serial stdio
+QEMUFLAGS       = -m 1G -enable-kvm -cpu host -serial stdio -M q35 -cdrom
 
 grub: nova
 	$(MAKE) -C guest/ all
 	cp guest/image.elf iso/boot/
-	cp NOVA/build/hypervisor-x86_64 iso/boot/hypervisor-x86_64
+	cp NOVA/build-x86_64/x86_64-nova iso/boot/hypervisor-x86_64
 	grub-mkrescue -o any.iso iso/
 
 limine: nova
@@ -25,8 +25,8 @@ limine: nova
 
 	
 nova:
-	git clone https://github.com/alex-ab/NOVA || echo ""
-	$(MAKE) -C NOVA/build/ ARCH=x86_64
+#	git clone https://github.com/alex-ab/NOVA || echo ""
+	$(MAKE) -C NOVA/ ARCH=x86_64
 
 clean:
 	$(MAKE) -C NOVA/build clean
@@ -34,3 +34,6 @@ clean:
 
 run:
 	$(QEMU) $(QEMUFLAGS) any.iso
+
+uefi:
+	$(QEMU) -bios /usr/share/ovmf/OVMF.fd $(QEMUFLAGS) any.iso
