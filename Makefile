@@ -25,7 +25,7 @@ limine: nova
 
 	
 nova:
-#	git clone https://github.com/alex-ab/NOVA || echo ""
+	git clone https://github.com/Udosteinberg/NOVA || echo ""
 	$(MAKE) -C NOVA/ ARCH=x86_64
 
 clean:
